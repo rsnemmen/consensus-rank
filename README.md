@@ -100,6 +100,8 @@ score  95% CI        P(#1)  P(top-3)  name
 
 Wide CIs and low `P(top-3)` signal fragile positions; items absent from many voter lists will show both naturally (the existing presence penalty still applies inside each resample). Works with all `--method` options.
 
+A PNG plot is also written automatically alongside the table. It shows a horizontal Cleveland-dot chart with each item's score and 95% CI as error bars, numbered in ranking order. The file is named `<first-input-stem>_ranking.png` in the current directory (e.g. `rank examples/llms.yaml --bootstrap` writes `./llms_ranking.png`).
+
 ## CLI reference
 
 ```

@@ -10,6 +10,7 @@ dependencies = [
     "pyyaml",
     "ranky",
     "numpy",
+    "matplotlib",
 ]
 
 [project.scripts]

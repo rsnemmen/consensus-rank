@@ -11,6 +11,36 @@ from pathlib import Path
 import numpy as np
 import yaml
 
+_NATURE_RC: dict[str, object] = {
+    "font.family": "sans-serif",
+    "font.sans-serif": ["Arial", "Helvetica Neue", "Helvetica", "DejaVu Sans"],
+    "axes.facecolor": "white",
+    "figure.facecolor": "white",
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+    "axes.linewidth": 0.8,
+    "axes.labelsize": 10,
+    "axes.titlesize": 12,
+    "axes.titleweight": "bold",
+    "xtick.labelsize": 9,
+    "ytick.labelsize": 9,
+    "xtick.major.size": 4,
+    "ytick.major.size": 4,
+    "xtick.major.width": 0.8,
+    "ytick.major.width": 0.8,
+    "xtick.direction": "out",
+    "ytick.direction": "out",
+    "grid.color": "#d0d0d0",
+    "grid.linewidth": 0.6,
+    "legend.fontsize": 9,
+    "legend.frameon": True,
+    "legend.framealpha": 0.9,
+    "legend.edgecolor": "#cccccc",
+    "legend.title_fontsize": 9,
+    "savefig.dpi": 300,
+    "savefig.bbox": "tight",
+}
+
 
 def load(path: Path) -> list[list[str]]:
     with open(path) as f:
@@ -169,6 +199,71 @@ def format_table(
     return "\n".join(lines)
 
 
+def plot_ranking(
+    rows: list[tuple[str, float]],
+    uncertainty: dict[str, dict[str, float]],
+    method: str,
+    output_path: Path,
+    title: str | None = None,
+) -> None:
+    """Cleveland-dot plot: items ranked top→bottom, score on x, 95% CI as error bars."""
+    try:
+        import matplotlib
+        import matplotlib.pyplot as plt
+    except ImportError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        print("Plotting requires matplotlib: pip install matplotlib", file=sys.stderr)
+        sys.exit(1)
+
+    x_labels = {
+        "borda": "Borda score (higher = better)",
+        "mean": "Mean rank (lower = better)",
+        "median": "Median rank (lower = better)",
+    }
+
+    n = len(rows)
+    with matplotlib.rc_context(_NATURE_RC):
+        fig, ax = plt.subplots(figsize=(8, max(4, n * 0.4)))
+
+        for i in range(n):
+            if i % 2 == 0:
+                ax.axhspan(i - 0.5, i + 0.5, facecolor="#f5f5f5", alpha=1.0, zorder=0)
+
+        for i, (name, score) in enumerate(rows):
+            u = uncertainty[name]
+            lo, hi = u["score_lo"], u["score_hi"]
+            ax.errorbar(
+                score,
+                i,
+                xerr=[[score - lo], [hi - score]],
+                fmt="o",
+                color="#0072B2",
+                ecolor="#0072B2",
+                elinewidth=0.9,
+                alpha=0.88,
+                markersize=9,
+                capsize=2,
+                capthick=0.9,
+                markeredgecolor="white",
+                markeredgewidth=0.6,
+                zorder=2,
+            )
+
+        ax.set_yticks(range(n))
+        ax.set_yticklabels([f"{i + 1}. {name}" for i, (name, _) in enumerate(rows)])
+        ax.invert_yaxis()
+        ax.spines["left"].set_visible(False)
+        ax.tick_params(axis="y", length=0)
+        ax.grid(True, axis="x", linestyle="--", linewidth=0.6, alpha=0.5)
+        ax.set_xlabel(x_labels.get(method, "score"))
+        ax.set_title(title or "Ranking", pad=12)
+
+        fig.savefig(output_path)
+        plt.close(fig)
+
+    print(f"Plot saved to: {output_path}", file=sys.stderr)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         prog="rank",
@@ -239,6 +334,10 @@ def main() -> None:
         else None
     )
     print(format_table(rows, args.method, uncertainty))
+
+    if uncertainty is not None:
+        out_path = Path(f"{args.inputs[0].stem}_ranking.png")
+        plot_ranking(rows, uncertainty, args.method, out_path, title=f"Ranking — {args.inputs[0].stem}")
 
 
 if __name__ == "__main__":
