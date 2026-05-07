@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Consensus ranking CLI — aggregate multiple ranked lists into one."""
 from __future__ import annotations
 
