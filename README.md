@@ -20,8 +20,8 @@ score  name
  7.67  Higienópolis
  7.33  Butantã
  7.33  Pompéia
- 6.33  Vila Mariana
  6.33  Vila Leopoldina
+ 6.33  Vila Mariana
  3.00  Alto da Lapa
  2.67  Jardim Paulista
  2.33  Moema
@@ -79,10 +79,31 @@ score  name
  1.33  grok-fast
 ```
 
+## Uncertainty (bootstrap)
+
+Use `--bootstrap` to quantify how stable the ranking is by resampling voters with replacement and re-aggregating. Three columns are added: a 95% score CI and the probability each item lands at rank #1 or in the top 3.
+
+```sh
+rank examples/neighborhoods.yaml --bootstrap          # 1000 resamples (default)
+rank examples/neighborhoods.yaml --bootstrap 5000     # custom N
+rank examples/neighborhoods.yaml --bootstrap --seed 0 # reproducible output
+```
+
+```
+score  95% CI        P(#1)  P(top-3)  name
+-----  ------------  -----  --------  -----------------
+ 7.67  [5.00, 9.00]   0.62      0.72  Higienópolis
+ 7.33  [5.00, 9.00]   0.38      0.72  Pompéia
+ 7.33  [7.00, 8.00]   0.00      1.00  Butantã
+ ...
+```
+
+Wide CIs and low `P(top-3)` signal fragile positions; items absent from many voter lists will show both naturally (the existing presence penalty still applies inside each resample). Works with all `--method` options.
+
 ## CLI reference
 
 ```
-rank <input> [<input> ...] [--method {borda,mean,median}] [-m]
+rank <input> [<input> ...] [--method {borda,mean,median}] [-m] [--bootstrap [N]] [--seed S]
 
 positional:
   inputs                one or more YAML files; rankings from all files are pooled
@@ -90,4 +111,6 @@ positional:
 options:
   --method              aggregation method (default: borda)
   -m, --show-missing    report items that appear in fewer than all rankings
+  --bootstrap [N]       add 95% CI and top-K probabilities via voter bootstrap (default N=1000)
+  --seed S              random seed for --bootstrap (reproducibility)
 ```
