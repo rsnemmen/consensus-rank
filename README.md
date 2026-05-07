@@ -38,6 +38,8 @@ A YAML file containing a list of lists. Each inner list is one voter's ranking, 
 - [option_a, option_c, option_b]   # voter 3
 ```
 
+Multiple files can be passed; their rankings are pooled into one combined list of voters before aggregation.
+
 See `examples/neighborhoods.yaml` (full overlap) and `examples/llms.yaml` (partial overlap) for runnable demos.
 
 ## Aggregation methods
@@ -80,10 +82,10 @@ score  name
 ## CLI reference
 
 ```
-rank <input> [--method {borda,mean,median}] [-m]
+rank <input> [<input> ...] [--method {borda,mean,median}] [-m]
 
 positional:
-  input                 YAML file containing a list of ranked lists
+  inputs                one or more YAML files; rankings from all files are pooled
 
 options:
   --method              aggregation method (default: borda)

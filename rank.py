@@ -13,8 +13,8 @@ import yaml
 def load(path: Path) -> list[list[str]]:
     with open(path) as f:
         data = yaml.safe_load(f)
-    if not isinstance(data, list) or len(data) < 2:
-        sys.exit(f"error: {path}: expected a YAML list of at least 2 rankings")
+    if not isinstance(data, list):
+        sys.exit(f"error: {path}: expected a YAML list of ranked lists")
     rankings: list[list[str]] = []
     for i, row in enumerate(data):
         if not isinstance(row, list) or len(row) == 0:
@@ -87,7 +87,12 @@ def main() -> None:
         prog="rank",
         description="Compute a consensus ranking from a YAML list of rankings.",
     )
-    parser.add_argument("input", type=Path, help="YAML file containing a list of ranked lists")
+    parser.add_argument(
+        "inputs",
+        type=Path,
+        nargs="+",
+        help="one or more YAML files; rankings from all files are pooled",
+    )
     parser.add_argument(
         "--method",
         choices=["borda", "mean", "median"],
@@ -102,7 +107,13 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    rankings = load(args.input)
+    rankings: list[list[str]] = []
+    for path in args.inputs:
+        rankings.extend(load(path))
+    if len(rankings) < 2:
+        sys.exit(
+            f"error: need at least 2 rankings across all inputs, got {len(rankings)}"
+        )
     n = len(rankings)
 
     if args.show_missing:

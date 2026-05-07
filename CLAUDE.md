@@ -11,18 +11,20 @@ pip install -e .
 ## Running the tool
 
 ```sh
-rank <input.yaml>
-rank <input.yaml> --method {borda,mean,median}
-rank <input.yaml> -m          # show items penalised for partial presence
+rank <input.yaml> [<more.yaml> ...]
+rank <input.yaml> [<more.yaml> ...] --method {borda,mean,median}
+rank <input.yaml> [<more.yaml> ...] -m   # show items penalised for partial presence
 ```
+
+When multiple files are provided, rankings from all files are pooled into one combined list of voters before aggregation.
 
 ## Architecture
 
 The entire implementation lives in a single file: `rank.py`. There is no package structure.
 
-**Data flow:** `load()` → `aggregate()` → `format_table()` → `print`
+**Data flow:** `load()` (once per file, results concatenated) → `aggregate()` → `format_table()` → `print`
 
-- `load(path)` — parses the YAML (list of lists, best→worst) and returns `list[list[str]]`
+- `load(path)` — parses one YAML file (list of lists, best→worst) and returns `list[list[str]]`
 - `aggregate(rankings, method)` — computes the consensus score for each item across all voters and returns a sorted `list[tuple[str, float]]`
 - `format_table(rows, method)` — formats the result as a column-aligned text table
 - `main()` — `argparse` entry point wired to the `rank` script in `pyproject.toml`
