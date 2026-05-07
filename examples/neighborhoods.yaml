@@ -1,0 +1,7 @@
+# São Paulo neighborhoods — 3 voters, 9 items (from ranking.ipynb Example 1)
+# Each list is one voter's ranking, best → worst.
+# Expected consensus (Borda): Higienópolis, Pompéia ≈ Butantã, Vila Leopoldina,
+#   Vila Mariana, Alto da Lapa, Jardim Paulista ≈ Alto de Pinheiros, Moema
+- [Higienópolis, Pompéia, Butantã, Vila Leopoldina, Vila Mariana, Alto da Lapa, Jardim Paulista, Alto de Pinheiros, Moema]
+- [Higienópolis, Vila Mariana, Butantã, Vila Leopoldina, Pompéia, Jardim Paulista, Moema, Alto de Pinheiros, Alto da Lapa]
+- [Pompéia, Butantã, Vila Leopoldina, Vila Mariana, Higienópolis, Alto da Lapa, Moema, Alto de Pinheiros, Jardim Paulista]

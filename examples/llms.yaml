@@ -1,0 +1,6 @@
+# LLM rankings — 3 evaluators with partial overlap (from ranking.ipynb Example 2)
+# Items missing from some lists are penalised proportionally.
+# List 3 only covers 4 models, so gpt5chat / grok4 / grok-fast get a 2/3 presence penalty.
+- [gemini, gpt5, sonnet, grok4, gemini-flash, gpt5chat, grok-fast]   # evaluator 1
+- [gpt5, gemini, grok4, sonnet, grok-fast, gpt5chat, gemini-flash]   # evaluator 2
+- [gemini, gpt5, sonnet, gemini-flash]                               # evaluator 3 (subset)

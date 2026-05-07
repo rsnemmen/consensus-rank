@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ranking"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "pyyaml",
+    "ranky",
+    "numpy",
+]
+
+[project.scripts]
+rank = "rank:main"
+
+[tool.setuptools]
+py-modules = ["rank"]
