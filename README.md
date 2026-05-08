@@ -1,6 +1,16 @@
-# ranking
+# consensus-rank
 
-Compute a consensus ranking from multiple ranked lists. Replaces the `ranking.ipynb` notebook workflow with a simple CLI.
+Compute a consensus ranking from multiple ranked lists. Good for decision-making when you have multiple ranked lists. 
+
+Features:
+
+- Borda count, mean, and median aggregation methods
+- Presence penalty for items missing from some lists
+- Bootstrap uncertainty quantification (95% CI, *P*(#1), *P*(top-3))
+- Cleveland-dot plot output showing bootstrapped uncertainty of ranking
+- Multiple input files pooled into one combined ranking
+
+Replaces my own `ranking.ipynb` notebook workflow with a simple CLI.
 
 ## Install
 
