@@ -15,8 +15,10 @@ Replaces my own `ranking.ipynb` notebook workflow with a simple CLI.
 ## Install
 
 ```sh
-pip install -e .
+curl -fsSL https://raw.githubusercontent.com/rsnemmen/consensus-rank/main/install.sh | bash
 ```
+
+Installs [`uv`](https://astral.sh/uv) if needed, then installs `rank` into an isolated environment so it's available globally on your PATH.
 
 ## Quick start
 
