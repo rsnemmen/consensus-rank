@@ -12,6 +12,28 @@ Features:
 
 Replaces my own `ranking.ipynb` notebook workflow with a simple CLI.
 
+## Try without installing
+
+If you have [`uv`](https://astral.sh/uv) — Astral's Python toolchain — run `rank` ephemerally with `uvx`, the Python equivalent of `npx -y`:
+
+```sh
+uvx --from git+https://github.com/rsnemmen/consensus-rank.git rank your_rankings.yaml
+```
+
+This downloads and caches the package in a throwaway environment under `~/.cache/uv`; nothing is added to your `PATH`. The next run is fast (cache hit); clear the cache with `uv cache clean` whenever.
+
+Don't have `uv` yet? One-time install:
+
+```sh
+curl -fsSL https://astral.sh/uv/install.sh | sh
+```
+
+Already a [`pipx`](https://pipx.pypa.io) user? `pipx run` works the same way:
+
+```sh
+pipx run --spec git+https://github.com/rsnemmen/consensus-rank.git rank your_rankings.yaml
+```
+
 ## Install
 
 ```sh
